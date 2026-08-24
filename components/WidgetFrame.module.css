@@ -1,0 +1,23 @@
+.frame {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  padding: var(--space-4);
+  animation: fade-slide-in 0.35s ease;
+}
+
+.frame :global(svg) {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
