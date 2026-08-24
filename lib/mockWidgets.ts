@@ -42,7 +42,7 @@ const compoundInterest: MockEntry = {
     var principal = 1000;
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function draw() {
@@ -129,7 +129,7 @@ const populationGrowth: MockEntry = {
     var start = 1000;
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function draw() {
@@ -216,7 +216,7 @@ const photosynthesis: MockEntry = {
     ];
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function render() {
@@ -274,7 +274,7 @@ const raftConsensus: MockEntry = {
     var labels = ['A', 'B', 'C', 'D'];
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function resetNodes() {
@@ -368,7 +368,7 @@ const tcpVsUdp: MockEntry = {
     var cardUdp = document.getElementById('cardUdp');
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function show(which) {
@@ -415,7 +415,7 @@ function genericChartFallback(query: string): MockEntry {
     var ctx = canvas.getContext('2d');
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function draw() {
@@ -491,7 +491,7 @@ function genericProcessFallback(query: string): MockEntry {
     var descriptions = ['The first stage of the process.', 'The middle stage of the process.', 'The final stage of the process.'];
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function render() {
@@ -538,7 +538,7 @@ function genericNetworkFallback(query: string): MockEntry {
     var ids = ['n0', 'n1', 'n2'];
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     button.addEventListener('click', function () {
@@ -596,7 +596,7 @@ function genericComparisonFallback(query: string): MockEntry {
     var cardB = document.getElementById('cardB');
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function show(which) {
@@ -651,7 +651,7 @@ const mitosis: MockEntry = {
     ];
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function render() {
@@ -705,7 +705,7 @@ const cellularRespiration: MockEntry = {
     ];
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function render() {
@@ -759,7 +759,7 @@ const paxos: MockEntry = {
     var acceptorIds = ['a0', 'a1', 'a2'];
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function resetAcceptors() {
@@ -854,7 +854,7 @@ const socialNetworkSpread: MockEntry = {
     var allIds = ['s', 'a', 'b', 'c', 'd', 'e'];
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function render() {
@@ -927,7 +927,7 @@ const sqlVsNosql: MockEntry = {
     var cardNosql = document.getElementById('cardNosql');
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function show(which) {
@@ -983,7 +983,7 @@ const radioactiveDecay: MockEntry = {
     var ctx = canvas.getContext('2d');
 
     function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.documentElement.scrollHeight }, '*');
+      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
     function draw() {

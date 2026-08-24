@@ -11,9 +11,8 @@ const RESIZE_MESSAGE_TYPE = "explainly:resize";
 const DEFAULT_HEIGHT = 320;
 const MIN_HEIGHT = 120;
 const MAX_HEIGHT = 900;
-// Small cushion on top of the reported height, so a widget's own bottom
-// margin/line-height rounding never reads as clipped.
-const HEIGHT_BUFFER = 48;
+// Small cushion on top of the reported height for sub-pixel rounding.
+const HEIGHT_BUFFER = 8;
 
 // widget_html is model-generated. sandbox="allow-scripts" with no
 // allow-same-origin means the iframe gets an opaque origin: it can run its own

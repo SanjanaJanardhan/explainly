@@ -34,7 +34,7 @@ function commonWidgetConstraints(): string {
 - The fragment must be valid, well-formed HTML — every tag you open must be closed.
 
 Height reporting (required): the widget renders inside a sandboxed iframe with no fixed height, so it must report its content height automatically. Include exactly this near the end of your script:
-function reportHeight() { window.parent.postMessage({ type: "explainly:resize", height: document.documentElement.scrollHeight }, "*"); }
+function reportHeight() { window.parent.postMessage({ type: "explainly:resize", height: document.body.scrollHeight }, "*"); }
 new ResizeObserver(reportHeight).observe(document.body);
 A ResizeObserver reports the initial height once layout has settled and again on every future size change, so no manual calls are needed elsewhere in the script. This is the only allowed use of window.parent.
 
