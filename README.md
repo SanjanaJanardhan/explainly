@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# explainly
 
-## Getting Started
+**[Live demo →](https://explain-sigma-wine.vercel.app)**
 
-First, run the development server:
+Type a concept. Get a custom, interactive visual explainer — not a wall of text.
+
+`explainly` sends a typed concept to Claude and gets back a self-contained interactive
+widget (sliders, buttons, live redraws) plus a short plain-language explanation, rendered
+live in the browser. The interesting engineering problem isn't calling an LLM — it's making
+sure the LLM's output is reliably correct, safe to render, and gracefully recoverable when it
+isn't.
+
+## How it works
+
+1. You type a concept (or click an example chip).
+2. A small heuristic classifier picks one of four widget shapes for it — **process/pipeline**,
+   **network/graph**, **parameterized chart**, or **comparison** — each with its own prompt
+   describing that shape's interaction pattern.
+3. Claude is called with a forced tool call (`emit_explainer`), guaranteeing structured
+   `{ explanation, widget_html }` output rather than free-text you'd have to parse.
+4. `widget_html` is validated: disallowed patterns (network calls, external scripts, disallowed
+   tags) and a real unclosed-tag check via a small HTML tokenizer. A validation failure gets one
+   retry with the specific reason fed back to the model; a second failure falls back to a
+   trusted static diagram plus the explanation, so a bad generation degrades gracefully instead
+   of showing a broken page.
+5. The widget renders inside `<iframe sandbox="allow-scripts">` — no `allow-same-origin` — so
+   generated code can run its own JS but cannot read cookies, call same-origin APIs, or touch
+   the parent page. It reports its own content height back via `postMessage` so the card sizes
+   itself to whatever the model generated.
+6. One follow-up question is supported per result, with the previous query and explanation
+   passed back to Claude as context.
+
+## Mock mode
+
+There's no `ANTHROPIC_API_KEY` configured on the live demo (keeping a public LLM-calling
+endpoint free to run costs real money in API credits). Without a key, the app runs entirely
+against hand-authored mock widgets instead of calling Claude — same validation, same sandboxed
+rendering, same UI, just no live generation:
+
+- **Five hand-tuned examples**: Photosynthesis (process), Raft consensus (network), Compound
+  interest and Population growth (chart), TCP vs UDP (comparison).
+- **Anything else** still gets a real, working widget of its classified shape — just a
+  generic one, not a bespoke example — and the explanation says so explicitly rather than
+  pretending it's a tailored generation.
+
+Add a real `ANTHROPIC_API_KEY` (in `.env.local` locally, or as an environment variable on
+Vercel) and the exact same code path switches to live Claude generation for arbitrary
+concepts — no other change needed.
+
+## Stack
+
+Next.js (App Router) + TypeScript, plain CSS with CSS variables (no component library),
+`@anthropic-ai/sdk`, deployed on Vercel.
+
+## Running locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). Runs in mock mode by default; to enable
+live generation, create `.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project structure
 
-## Learn More
+```
+app/
+  page.tsx              landing page
+  result/page.tsx        result page (reads ?q=&shape=&prevQ=&prevExplanation=)
+  api/explain/route.ts   generation endpoint: rate limit → classify → generate → validate
+components/              SearchInput, ExampleChips, WidgetIframe, ResultView, ...
+lib/
+  prompts.ts              per-shape system prompts
+  explain.ts              orchestrates generation, retry, fallback
+  validateWidget.ts        disallowed-pattern + unclosed-tag validation
+  classify.ts              heuristic shape classifier
+  mockWidgets.ts            hand-authored fallback widgets for mock mode
+```
 
-To learn more about Next.js, take a look at the following resources:
+## What's not built (by design, v1 scope)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+No accounts, no database, no permalinks, no arbitrary widget shapes beyond the four above —
+all deliberately deferred per the project's own MVP scope. See the spec this was built against
+for the full stretch-goal list.
