@@ -14,7 +14,13 @@ export const STATIC_FALLBACK_SVG = `
 
 export const exampleQueries: { label: string; shape: WidgetShape }[] = [
   { label: "Photosynthesis", shape: "process" },
+  { label: "Mitosis", shape: "process" },
   { label: "Raft consensus", shape: "network" },
+  { label: "Paxos", shape: "network" },
+  { label: "Social network spread", shape: "network" },
   { label: "Compound interest", shape: "chart" },
+  { label: "Population growth", shape: "chart" },
+  { label: "Radioactive decay", shape: "chart" },
   { label: "TCP vs UDP", shape: "comparison" },
+  { label: "SQL vs NoSQL", shape: "comparison" },
 ];

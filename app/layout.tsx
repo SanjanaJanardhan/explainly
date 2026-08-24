@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-const SITE_URL = "https://explain-sigma-wine.vercel.app";
+const SITE_URL = "https://explainly-mauve.vercel.app";
 const TITLE = "explainly";
 const DESCRIPTION = "Type a concept. Get an interactive explainer.";
 

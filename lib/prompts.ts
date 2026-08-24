@@ -30,7 +30,8 @@ function commonWidgetConstraints(): string {
 - Do not reference window.top. Do not reference window.parent except for the one required height-reporting call described below.
 - No external libraries — only <canvas>, inline <svg>, plain DOM/CSS, and vanilla JS.
 - The widget must size itself to its container: use width: 100% / viewBox, not fixed pixel widths on the outermost element.
-- Keep visual style restrained and flat: neutral grays and a single accent color (#2f5bff), no gradients, no drop shadows, generous spacing.
+- Keep visual style restrained and flat: neutral grays and a single accent color (#2f5bff) for all interactive/UI chrome (sliders, buttons, active states), no gradients, no drop shadows, generous spacing.
+- Where the concept has an obvious visual referent (a sun, a leaf, a water drop, an atom, a server, a person, a coin, ...), include a small hand-drawn inline-SVG illustration of it using flat shapes (circle/ellipse/rect/polygon/line, no gradients) — this is the one place a few extra flat colors beyond the single accent are allowed, e.g. warm yellow #f5b83d, leaf green #4a9d5f, water blue #5b9bd5. Prefer a widget with a real, on-topic illustration over one with only abstract boxes/sliders.
 - The fragment must be valid, well-formed HTML — every tag you open must be closed.
 
 Height reporting (required): the widget renders inside a sandboxed iframe with no fixed height, so it must report its content height automatically. Include exactly this near the end of your script:
@@ -57,6 +58,7 @@ For this request, always produce a "parameterized chart" widget: one or more sli
 Shape-specific requirements:
 - Draw the chart with either <canvas> + a 2D context, or inline <svg> manipulated via vanilla JS.
 - Use one or more <input type="range"> sliders (with a visible label showing the current value) that redraw the chart on the "input" event.
+- Auto-play: on load, animate the primary slider from its default value to a more visually interesting demo value over about 1.2 seconds (small steps via setInterval), then stop — this is a one-time intro sweep, not a loop. The user dragging any slider themselves must immediately cancel the sweep and hand back full manual control.
 
 ${commonWidgetConstraints()}`;
 }
@@ -71,6 +73,7 @@ Shape-specific requirements:
 - Use a single <input type="range"> scrubber whose min/max spans the stage indices (e.g. 0 to stageCount-1, step 1).
 - On the scrubber's "input" event, visually highlight the current stage (e.g. accent color vs. neutral for the rest) and update a short description of that specific stage in a text element below.
 - Pick 4-6 stages that meaningfully break down the concept.
+- Auto-play: start a timer (setInterval, ~1800ms) shortly after the widget loads that advances the scrubber through the stages automatically, looping back to the first stage after the last. The user dragging the scrubber themselves (a genuine "input" event, not one your own timer triggers by setting .value) must permanently stop the timer — the viewer taking control is the natural way to end auto-play.
 
 ${commonWidgetConstraints()}`;
 }
@@ -84,6 +87,7 @@ Shape-specific requirements:
 - Render 3-6 nodes and their connecting edges using inline <svg> (circles/paths) or positioned <div>s.
 - Include one interactive trigger — a <button> (most common) or a slider — that starts an animation/state change over the graph (e.g. propagation, election, highlighting a path) using timed updates (setTimeout/requestAnimationFrame; no fetch/network APIs).
 - The end state after the animation should visually communicate the outcome (e.g. a node highlighted as "leader", a highlighted path).
+- Auto-play: call the trigger automatically ~800ms after the widget loads, so the animation plays without requiring a click. Leave the trigger available afterward so the viewer can replay it manually.
 
 ${commonWidgetConstraints()}`;
 }
@@ -96,6 +100,7 @@ For this request, always produce a "comparison" widget: two things placed side b
 Shape-specific requirements:
 - Render two cards/columns, one per side of the comparison, each listing 3-5 short labeled attributes.
 - Include one interactive control — a toggle, tab, or button pair — that switches which side is emphasized/expanded (e.g. via a CSS class swap on click), so the widget is genuinely interactive rather than a static table.
+- Auto-play: switch to the second side automatically once, ~2000ms after the widget loads, so a viewer sees both states without acting. Leave the control fully manual afterward.
 
 ${commonWidgetConstraints()}`;
 }

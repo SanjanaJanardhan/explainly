@@ -19,7 +19,14 @@ const compoundInterest: MockEntry = {
     </label>
   </div>
   <canvas id="chart" width="600" height="280"></canvas>
-  <div class="result">Final balance on a $1,000 principal: <strong id="finalVal"></strong></div>
+  <div class="result">
+    <svg width="26" height="18" viewBox="0 0 26 18" aria-hidden="true">
+      <ellipse cx="13" cy="14" rx="11" ry="3.5" fill="#f5b83d" />
+      <ellipse cx="13" cy="9" rx="11" ry="3.5" fill="#f5b83d" />
+      <ellipse cx="13" cy="4" rx="11" ry="3.5" fill="#f5b83d" stroke="#c98f1f" stroke-width="1" />
+    </svg>
+    Final balance on a $1,000 principal: <strong id="finalVal"></strong>
+  </div>
 </div>
 <style>
   .wrap { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -27,7 +34,7 @@ const compoundInterest: MockEntry = {
   label { font-size:13px; color:#444; display:flex; flex-direction:column; gap:4px; }
   input[type=range] { accent-color:#2f5bff; }
   canvas { width:100%; height:auto; display:block; border:1px solid #e5e5e5; border-radius:8px; }
-  .result { margin-top:12px; font-size:14px; color:#1a1a1a; }
+  .result { margin-top:12px; font-size:14px; color:#1a1a1a; display:flex; align-items:center; gap:8px; }
   .result strong { color:#2f5bff; }
 </style>
 <script>
@@ -83,9 +90,20 @@ const compoundInterest: MockEntry = {
       finalVal.textContent = '$' + Math.round(points[points.length - 1]).toLocaleString();
     }
 
-    rateInput.addEventListener('input', draw);
-    yearsInput.addEventListener('input', draw);
+    function stopSweep() { clearInterval(sweepTimer); }
+
+    rateInput.addEventListener('input', function () { stopSweep(); draw(); });
+    yearsInput.addEventListener('input', function () { stopSweep(); draw(); });
     draw();
+
+    var demoTarget = 12;
+    var sweepTimer = setInterval(function () {
+      var next = Math.min(parseFloat(rateInput.value) + 0.5, demoTarget);
+      rateInput.value = String(next);
+      draw();
+      if (next >= demoTarget) { clearInterval(sweepTimer); }
+    }, 90);
+
     new ResizeObserver(reportHeight).observe(document.body);
   })();
 </script>
@@ -107,6 +125,7 @@ const populationGrowth: MockEntry = {
   </div>
   <canvas id="chart" width="600" height="280"></canvas>
   <div class="result">Population after that time, starting from 1,000: <strong id="finalVal"></strong></div>
+  <div class="dots" id="dots" aria-hidden="true"></div>
 </div>
 <style>
   .wrap { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -116,6 +135,8 @@ const populationGrowth: MockEntry = {
   canvas { width:100%; height:auto; display:block; border:1px solid #e5e5e5; border-radius:8px; }
   .result { margin-top:12px; font-size:14px; color:#1a1a1a; }
   .result strong { color:#2f5bff; }
+  .dots { margin-top:8px; line-height:0; }
+  .person-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:#4a9d5f; margin:2px; }
 </style>
 <script>
   (function () {
@@ -124,6 +145,7 @@ const populationGrowth: MockEntry = {
     var rateVal = document.getElementById('rateVal');
     var yearsVal = document.getElementById('yearsVal');
     var finalVal = document.getElementById('finalVal');
+    var dots = document.getElementById('dots');
     var canvas = document.getElementById('chart');
     var ctx = canvas.getContext('2d');
     var start = 1000;
@@ -167,12 +189,29 @@ const populationGrowth: MockEntry = {
       }
       ctx.stroke();
 
-      finalVal.textContent = Math.round(points[points.length - 1]).toLocaleString();
+      var finalPop = points[points.length - 1];
+      finalVal.textContent = Math.round(finalPop).toLocaleString();
+
+      var dotCount = Math.min(24, Math.max(1, Math.round(Math.log(finalPop / start) * 6)));
+      var html = '';
+      for (var d = 0; d < dotCount; d++) { html += '<span class="person-dot"></span>'; }
+      dots.innerHTML = html;
     }
 
-    rateInput.addEventListener('input', draw);
-    yearsInput.addEventListener('input', draw);
+    function stopSweep() { clearInterval(sweepTimer); }
+
+    rateInput.addEventListener('input', function () { stopSweep(); draw(); });
+    yearsInput.addEventListener('input', function () { stopSweep(); draw(); });
     draw();
+
+    var demoTarget = 90;
+    var sweepTimer = setInterval(function () {
+      var next = Math.min(parseInt(yearsInput.value, 10) + 4, demoTarget);
+      yearsInput.value = String(next);
+      draw();
+      if (next >= demoTarget) { clearInterval(sweepTimer); }
+    }, 90);
+
     new ResizeObserver(reportHeight).observe(document.body);
   })();
 </script>
@@ -184,6 +223,36 @@ const photosynthesis: MockEntry = {
     "Photosynthesis unfolds as a sequence of linked steps: light is captured, water is split, energy carriers are built, and those carriers power the assembly of glucose from carbon dioxide. Each stage depends on the output of the one before it.",
   widgetHtml: `
 <div class="wrap">
+  <svg class="illo" viewBox="0 0 460 100" width="100%" height="90">
+    <g id="ill-sun">
+      <circle cx="35" cy="30" r="14" fill="#f5b83d" />
+      <line x1="35" y1="4" x2="35" y2="12" stroke="#f5b83d" stroke-width="3" stroke-linecap="round" />
+      <line x1="35" y1="48" x2="35" y2="56" stroke="#f5b83d" stroke-width="3" stroke-linecap="round" />
+      <line x1="9" y1="30" x2="17" y2="30" stroke="#f5b83d" stroke-width="3" stroke-linecap="round" />
+      <line x1="53" y1="30" x2="61" y2="30" stroke="#f5b83d" stroke-width="3" stroke-linecap="round" />
+      <line x1="16" y1="11" x2="21" y2="16" stroke="#f5b83d" stroke-width="3" stroke-linecap="round" />
+      <line x1="49" y1="44" x2="54" y2="49" stroke="#f5b83d" stroke-width="3" stroke-linecap="round" />
+    </g>
+    <g id="ill-water">
+      <circle cx="20" cy="80" r="6" fill="#5b9bd5" />
+      <circle cx="36" cy="85" r="5" fill="#5b9bd5" />
+      <circle cx="50" cy="78" r="4" fill="#5b9bd5" />
+    </g>
+    <g id="ill-leaf" transform="translate(230,50) rotate(-18)">
+      <ellipse cx="0" cy="0" rx="34" ry="18" fill="#4a9d5f" />
+      <line x1="-30" y1="0" x2="30" y2="0" stroke="#2d6b3c" stroke-width="2" />
+    </g>
+    <g id="ill-energy">
+      <rect x="195" y="15" width="10" height="10" fill="#f5b83d" transform="rotate(45 200 20)" />
+      <rect x="255" y="18" width="8" height="8" fill="#f5b83d" transform="rotate(45 259 22)" />
+    </g>
+    <g id="ill-co2">
+      <circle cx="360" cy="24" r="14" fill="none" stroke="#6b6b6b" stroke-width="2" />
+      <text x="360" y="28" text-anchor="middle" font-size="10" fill="#6b6b6b">CO2</text>
+      <line x1="345" y1="34" x2="270" y2="48" stroke="#6b6b6b" stroke-width="2" />
+    </g>
+    <polygon id="ill-glucose" points="420,35 432,42 432,56 420,63 408,56 408,42" fill="#2f5bff" />
+  </svg>
   <div class="stages" id="stages">
     <div class="stage" data-i="0">Light absorbed</div>
     <div class="stage" data-i="1">Water split</div>
@@ -196,6 +265,8 @@ const photosynthesis: MockEntry = {
 </div>
 <style>
   .wrap { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  .illo { display:block; margin-bottom:8px; }
+  .illo g, .illo polygon { transition: opacity 0.3s ease; }
   .stages { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
   .stage { flex:1; min-width:90px; padding:10px 8px; text-align:center; font-size:12px; border-radius:8px; background:#f5f5f5; color:#6b6b6b; border:1px solid #e5e5e5; transition: background 0.15s, color 0.15s; }
   .stage.active { background:#2f5bff; color:#fff; border-color:#2f5bff; }
@@ -214,6 +285,7 @@ const photosynthesis: MockEntry = {
       'ATP and NADPH power the Calvin cycle, which fixes carbon dioxide from the air.',
       'Fixed carbon is assembled into glucose, storing the captured energy.'
     ];
+    var illIds = ['ill-sun', 'ill-water', 'ill-energy', 'ill-co2', 'ill-glucose'];
 
     function reportHeight() {
       window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
@@ -225,10 +297,22 @@ const photosynthesis: MockEntry = {
         stages[j].className = (j === i) ? 'stage active' : 'stage';
       }
       desc.textContent = descriptions[i];
+      for (var k = 0; k < illIds.length; k++) {
+        document.getElementById(illIds[k]).style.opacity = (k === i) ? '1' : '0.25';
+      }
     }
 
-    scrubber.addEventListener('input', render);
+    function stopAutoplay() { clearInterval(autoTimer); }
+
+    scrubber.addEventListener('input', function () { stopAutoplay(); render(); });
     render();
+
+    var autoTimer = setInterval(function () {
+      var next = (parseInt(scrubber.value, 10) + 1) % stages.length;
+      scrubber.value = String(next);
+      render();
+    }, 1800);
+
     new ResizeObserver(reportHeight).observe(document.body);
   })();
 </script>
@@ -313,6 +397,7 @@ const raftConsensus: MockEntry = {
     }
 
     button.addEventListener('click', runElection);
+    setTimeout(runElection, 800);
     new ResizeObserver(reportHeight).observe(document.body);
   })();
 </script>
@@ -330,7 +415,7 @@ const tcpVsUdp: MockEntry = {
   </div>
   <div class="cards">
     <div class="card active" id="cardTcp">
-      <h3>TCP</h3>
+      <h3><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="6" cy="9" r="5" fill="none" stroke="#2f5bff" stroke-width="2" /><circle cx="12" cy="9" r="5" fill="none" stroke="#2f5bff" stroke-width="2" /></svg> TCP</h3>
       <ul>
         <li>Connection-oriented</li>
         <li>Reliable, ordered delivery</li>
@@ -339,7 +424,7 @@ const tcpVsUdp: MockEntry = {
       </ul>
     </div>
     <div class="card" id="cardUdp">
-      <h3>UDP</h3>
+      <h3><svg width="14" height="18" viewBox="0 0 14 18" aria-hidden="true"><polygon points="8,0 1,10 6,10 4,18 13,7 8,7" fill="#f5b83d" /></svg> UDP</h3>
       <ul>
         <li>Connectionless</li>
         <li>No delivery guarantees</li>
@@ -357,7 +442,7 @@ const tcpVsUdp: MockEntry = {
   .cards { display:flex; gap:16px; flex-wrap:wrap; }
   .card { flex:1; min-width:160px; padding:16px; border-radius:10px; border:1px solid #e5e5e5; background:#fafafa; opacity:0.5; transition: opacity 0.15s, border-color 0.15s; }
   .card.active { opacity:1; border-color:#2f5bff; }
-  .card h3 { margin:0 0 8px; font-size:14px; }
+  .card h3 { margin:0 0 8px; font-size:14px; display:flex; align-items:center; gap:6px; }
   .card ul { margin:0; padding-left:18px; font-size:13px; color:#444; line-height:1.6; }
 </style>
 <script>
@@ -371,6 +456,8 @@ const tcpVsUdp: MockEntry = {
       window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
+    function stopAuto() { clearTimeout(autoTimer); }
+
     function show(which) {
       var tcpOn = which === 'tcp';
       tabTcp.className = tcpOn ? 'tab active' : 'tab';
@@ -379,8 +466,11 @@ const tcpVsUdp: MockEntry = {
       cardUdp.className = tcpOn ? 'card' : 'card active';
     }
 
-    tabTcp.addEventListener('click', function () { show('tcp'); });
-    tabUdp.addEventListener('click', function () { show('udp'); });
+    tabTcp.addEventListener('click', function () { stopAuto(); show('tcp'); });
+    tabUdp.addEventListener('click', function () { stopAuto(); show('udp'); });
+
+    var autoTimer = setTimeout(function () { show('udp'); }, 2000);
+
     new ResizeObserver(reportHeight).observe(document.body);
   })();
 </script>
@@ -621,6 +711,17 @@ const mitosis: MockEntry = {
     "Mitosis divides one cell's chromosomes into two identical sets through a sequence of distinct phases. Each phase depends on the one before it: chromosomes must condense before they can be aligned, and aligned before they can be pulled apart.",
   widgetHtml: `
 <div class="wrap">
+  <svg class="illo" viewBox="0 0 300 130" width="100%" height="120">
+    <ellipse cx="150" cy="65" rx="120" ry="55" fill="none" stroke="#e5e5e5" stroke-width="2" />
+    <circle cx="30" cy="65" r="4" fill="#6b6b6b" />
+    <circle cx="270" cy="65" r="4" fill="#6b6b6b" />
+    <ellipse id="nucA" cx="60" cy="65" rx="34" ry="28" fill="none" stroke="#2f5bff" stroke-width="2" stroke-dasharray="4 3" style="opacity:0" />
+    <ellipse id="nucB" cx="240" cy="65" rx="34" ry="28" fill="none" stroke="#2f5bff" stroke-width="2" stroke-dasharray="4 3" style="opacity:0" />
+    <rect id="chr0" x="122" y="47" width="16" height="7" rx="3" fill="#2f5bff" />
+    <rect id="chr1" x="142" y="42" width="16" height="7" rx="3" fill="#2f5bff" />
+    <rect id="chr2" x="162" y="52" width="16" height="7" rx="3" fill="#2f5bff" />
+    <rect id="chr3" x="137" y="72" width="16" height="7" rx="3" fill="#2f5bff" />
+  </svg>
   <div class="stages" id="stages">
     <div class="stage" data-i="0">Prophase</div>
     <div class="stage" data-i="1">Metaphase</div>
@@ -632,6 +733,8 @@ const mitosis: MockEntry = {
 </div>
 <style>
   .wrap { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  .illo { display:block; margin-bottom:8px; }
+  .illo rect, .illo ellipse#nucA, .illo ellipse#nucB { transition: opacity 0.3s ease; }
   .stages { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
   .stage { flex:1; min-width:100px; padding:10px 8px; text-align:center; font-size:12px; border-radius:8px; background:#f5f5f5; color:#6b6b6b; border:1px solid #e5e5e5; transition: background 0.15s, color 0.15s; }
   .stage.active { background:#2f5bff; color:#fff; border-color:#2f5bff; }
@@ -649,59 +752,11 @@ const mitosis: MockEntry = {
       'Sister chromatids separate and are pulled to opposite poles of the cell.',
       'Nuclear membranes reform around each set of chromosomes as the cell prepares to divide.'
     ];
-
-    function reportHeight() {
-      window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
-    }
-
-    function render() {
-      var i = parseInt(scrubber.value, 10);
-      for (var j = 0; j < stages.length; j++) {
-        stages[j].className = (j === i) ? 'stage active' : 'stage';
-      }
-      desc.textContent = descriptions[i];
-    }
-
-    scrubber.addEventListener('input', render);
-    render();
-    new ResizeObserver(reportHeight).observe(document.body);
-  })();
-</script>
-`.trim(),
-};
-
-const cellularRespiration: MockEntry = {
-  explanation:
-    "Cellular respiration breaks down glucose across four linked stages to produce usable energy. Most of the payoff comes at the end: the first stages mainly set up electron carriers that the final stage uses to generate the bulk of the cell's ATP.",
-  widgetHtml: `
-<div class="wrap">
-  <div class="stages" id="stages">
-    <div class="stage" data-i="0">Glycolysis</div>
-    <div class="stage" data-i="1">Pyruvate oxidation</div>
-    <div class="stage" data-i="2">Krebs cycle</div>
-    <div class="stage" data-i="3">Electron transport chain</div>
-  </div>
-  <input id="scrubber" type="range" min="0" max="3" value="0" step="1" />
-  <div class="desc" id="desc"></div>
-</div>
-<style>
-  .wrap { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-  .stages { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
-  .stage { flex:1; min-width:110px; padding:10px 8px; text-align:center; font-size:12px; border-radius:8px; background:#f5f5f5; color:#6b6b6b; border:1px solid #e5e5e5; transition: background 0.15s, color 0.15s; }
-  .stage.active { background:#2f5bff; color:#fff; border-color:#2f5bff; }
-  input[type=range] { width:100%; accent-color:#2f5bff; margin-bottom:16px; }
-  .desc { font-size:14px; color:#1a1a1a; min-height:40px; }
-</style>
-<script>
-  (function () {
-    var scrubber = document.getElementById('scrubber');
-    var desc = document.getElementById('desc');
-    var stages = document.querySelectorAll('.stage');
-    var descriptions = [
-      'Glucose is split into two pyruvate molecules in the cytoplasm, yielding a small amount of ATP.',
-      'Pyruvate is converted into acetyl-CoA, releasing carbon dioxide.',
-      'Acetyl-CoA is oxidized, generating the electron carriers NADH and FADH2.',
-      'Electron carriers power ATP synthase, producing the majority of the cell energy as ATP.'
+    var positions = [
+      [[130, 50], [150, 45], [170, 55], [145, 75]],
+      [[150, 35], [150, 50], [150, 80], [150, 95]],
+      [[90, 50], [90, 80], [210, 50], [210, 80]],
+      [[60, 50], [60, 80], [240, 50], [240, 80]]
     ];
 
     function reportHeight() {
@@ -714,10 +769,29 @@ const cellularRespiration: MockEntry = {
         stages[j].className = (j === i) ? 'stage active' : 'stage';
       }
       desc.textContent = descriptions[i];
+
+      var pos = positions[i];
+      for (var c = 0; c < 4; c++) {
+        var el = document.getElementById('chr' + c);
+        el.setAttribute('x', String(pos[c][0] - 8));
+        el.setAttribute('y', String(pos[c][1] - 3));
+      }
+      var nucleiOpacity = (i === 3) ? '1' : '0';
+      document.getElementById('nucA').style.opacity = nucleiOpacity;
+      document.getElementById('nucB').style.opacity = nucleiOpacity;
     }
 
-    scrubber.addEventListener('input', render);
+    function stopAutoplay() { clearInterval(autoTimer); }
+
+    scrubber.addEventListener('input', function () { stopAutoplay(); render(); });
     render();
+
+    var autoTimer = setInterval(function () {
+      var next = (parseInt(scrubber.value, 10) + 1) % stages.length;
+      scrubber.value = String(next);
+      render();
+    }, 1800);
+
     new ResizeObserver(reportHeight).observe(document.body);
   })();
 </script>
@@ -808,6 +882,7 @@ const paxos: MockEntry = {
     }
 
     button.addEventListener('click', runRound);
+    setTimeout(runRound, 800);
     new ResizeObserver(reportHeight).observe(document.body);
   })();
 </script>
@@ -870,8 +945,17 @@ const socialNetworkSpread: MockEntry = {
       reportHeight();
     }
 
-    scrubber.addEventListener('input', render);
+    function stopAutoplay() { clearInterval(autoTimer); }
+
+    scrubber.addEventListener('input', function () { stopAutoplay(); render(); });
     render();
+
+    var autoTimer = setInterval(function () {
+      var next = (parseInt(scrubber.value, 10) + 1) % waves.length;
+      scrubber.value = String(next);
+      render();
+    }, 1800);
+
     new ResizeObserver(reportHeight).observe(document.body);
   })();
 </script>
@@ -889,7 +973,7 @@ const sqlVsNosql: MockEntry = {
   </div>
   <div class="cards">
     <div class="card active" id="cardSql">
-      <h3>SQL</h3>
+      <h3><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x="1" y="1" width="16" height="16" fill="none" stroke="#2f5bff" stroke-width="2" /><line x1="1" y1="9" x2="17" y2="9" stroke="#2f5bff" stroke-width="2" /><line x1="9" y1="1" x2="9" y2="17" stroke="#2f5bff" stroke-width="2" /></svg> SQL</h3>
       <ul>
         <li>Structured, fixed schema</li>
         <li>ACID transactions</li>
@@ -898,7 +982,7 @@ const sqlVsNosql: MockEntry = {
       </ul>
     </div>
     <div class="card" id="cardNosql">
-      <h3>NoSQL</h3>
+      <h3><span class="braces" aria-hidden="true">{ }</span> NoSQL</h3>
       <ul>
         <li>Flexible, schema-less</li>
         <li>Often eventual consistency</li>
@@ -916,7 +1000,8 @@ const sqlVsNosql: MockEntry = {
   .cards { display:flex; gap:16px; flex-wrap:wrap; }
   .card { flex:1; min-width:160px; padding:16px; border-radius:10px; border:1px solid #e5e5e5; background:#fafafa; opacity:0.5; transition: opacity 0.15s, border-color 0.15s; }
   .card.active { opacity:1; border-color:#2f5bff; }
-  .card h3 { margin:0 0 8px; font-size:14px; }
+  .card h3 { margin:0 0 8px; font-size:14px; display:flex; align-items:center; gap:6px; }
+  .braces { font-size:16px; font-weight:700; color:#f5b83d; }
   .card ul { margin:0; padding-left:18px; font-size:13px; color:#444; line-height:1.6; }
 </style>
 <script>
@@ -930,6 +1015,8 @@ const sqlVsNosql: MockEntry = {
       window.parent.postMessage({ type: 'explainly:resize', height: document.body.scrollHeight }, '*');
     }
 
+    function stopAuto() { clearTimeout(autoTimer); }
+
     function show(which) {
       var sqlOn = which === 'sql';
       tabSql.className = sqlOn ? 'tab active' : 'tab';
@@ -939,8 +1026,11 @@ const sqlVsNosql: MockEntry = {
       reportHeight();
     }
 
-    tabSql.addEventListener('click', function () { show('sql'); });
-    tabNosql.addEventListener('click', function () { show('nosql'); });
+    tabSql.addEventListener('click', function () { stopAuto(); show('sql'); });
+    tabNosql.addEventListener('click', function () { stopAuto(); show('nosql'); });
+
+    var autoTimer = setTimeout(function () { show('nosql'); }, 2000);
+
     new ResizeObserver(reportHeight).observe(document.body);
   })();
 </script>
@@ -953,7 +1043,16 @@ const radioactiveDecay: MockEntry = {
   widgetHtml: `
 <div class="wrap">
   <div class="controls">
-    <label>Half-life: <span id="hlVal">5</span> years
+    <label>
+      <span class="labelrow">
+        <svg width="20" height="20" viewBox="0 0 30 30" aria-hidden="true">
+          <circle cx="15" cy="15" r="3" fill="#5b9bd5" />
+          <ellipse cx="15" cy="15" rx="13" ry="6" fill="none" stroke="#5b9bd5" stroke-width="1.5" />
+          <ellipse cx="15" cy="15" rx="13" ry="6" fill="none" stroke="#5b9bd5" stroke-width="1.5" transform="rotate(60 15 15)" />
+          <ellipse cx="15" cy="15" rx="13" ry="6" fill="none" stroke="#5b9bd5" stroke-width="1.5" transform="rotate(120 15 15)" />
+        </svg>
+        Half-life: <span id="hlVal">5</span> years
+      </span>
       <input id="halflife" type="range" min="1" max="20" value="5" step="1" />
     </label>
     <label>Years shown: <span id="yearsVal">30</span>
@@ -967,6 +1066,7 @@ const radioactiveDecay: MockEntry = {
   .wrap { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
   .controls { display:flex; gap:24px; margin-bottom:16px; flex-wrap:wrap; }
   label { font-size:13px; color:#444; display:flex; flex-direction:column; gap:4px; }
+  .labelrow { display:flex; align-items:center; gap:6px; }
   input[type=range] { accent-color:#2f5bff; }
   canvas { width:100%; height:auto; display:block; border:1px solid #e5e5e5; border-radius:8px; }
   .result { margin-top:12px; font-size:14px; color:#1a1a1a; }
@@ -1022,9 +1122,20 @@ const radioactiveDecay: MockEntry = {
       reportHeight();
     }
 
-    halflifeInput.addEventListener('input', draw);
-    yearsInput.addEventListener('input', draw);
+    function stopSweep() { clearInterval(sweepTimer); }
+
+    halflifeInput.addEventListener('input', function () { stopSweep(); draw(); });
+    yearsInput.addEventListener('input', function () { stopSweep(); draw(); });
     draw();
+
+    var demoTarget = 80;
+    var sweepTimer = setInterval(function () {
+      var next = Math.min(parseInt(yearsInput.value, 10) + 5, demoTarget);
+      yearsInput.value = String(next);
+      draw();
+      if (next >= demoTarget) { clearInterval(sweepTimer); }
+    }, 90);
+
     new ResizeObserver(reportHeight).observe(document.body);
   })();
 </script>
@@ -1040,7 +1151,6 @@ const MOCK_ENTRIES: Record<WidgetShape, Record<string, MockEntry>> = {
   process: {
     photosynthesis: photosynthesis,
     mitosis: mitosis,
-    "cellular respiration": cellularRespiration,
   },
   network: {
     "raft consensus": raftConsensus,

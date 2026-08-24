@@ -1,6 +1,6 @@
 # explainly
 
-**[Live demo →](https://explain-sigma-wine.vercel.app)**
+**[Live demo →](https://explainly-mauve.vercel.app)**
 
 Type a concept. Get a custom, interactive visual explainer — not a wall of text.
 
@@ -37,8 +37,11 @@ endpoint free to run costs real money in API credits). Without a key, the app ru
 against hand-authored mock widgets instead of calling Claude — same validation, same sandboxed
 rendering, same UI, just no live generation:
 
-- **Five hand-tuned examples**: Photosynthesis (process), Raft consensus (network), Compound
-  interest and Population growth (chart), TCP vs UDP (comparison).
+- **Ten hand-tuned, illustrated examples**, all on the landing page as chips: Photosynthesis
+  and Mitosis (process, with hand-drawn SVG illustrations and auto-playing scrubbers), Raft
+  consensus, Paxos, and Social network spread (network, auto-triggered animations), Compound
+  interest, Population growth, and Radioactive decay (chart, with a one-time auto-sweep intro),
+  TCP vs UDP and SQL vs NoSQL (comparison, with icons and an auto-alternating toggle).
 - **Anything else** still gets a real, working widget of its classified shape — just a
   generic one, not a bespoke example — and the explanation says so explicitly rather than
   pretending it's a tailored generation.
